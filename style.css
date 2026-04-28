@@ -11,3 +11,20 @@ body {
   color:#00cfff; font-size:16px; font-weight:bold;
   letter-spacing:2px; text-shadow:0 0 8px #00cfff;
 }
+#canvas { display:block; border:2px solid #00cfff; box-shadow:0 0 30px rgba(0,180,255,0.3); cursor:none; }
+#overlay {
+  position:fixed; inset:0; background:rgba(0,2,15,0.93);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:999; gap:14px; text-align:center;
+}
+#overlayTitle { font-size:52px; font-weight:900; letter-spacing:10px; color:#00cfff; text-shadow:0 0 30px #00cfff; }
+#overlaySub   { font-size:17px; color:#aaddff; letter-spacing:3px; }
+#overlayScore { font-size:26px; color:#ffff00; text-shadow:0 0 12px #ffff00; min-height:1.5em; }
+#overlayBtn {
+  margin-top:8px; background:transparent; border:2px solid #00cfff;
+  color:#00cfff; font-family:'Courier New',monospace; font-size:20px; font-weight:bold;
+  letter-spacing:5px; padding:12px 44px; cursor:pointer;
+  text-shadow:0 0 8px #00cfff; transition:background .15s;
+}
+#overlayBtn:hover { background:rgba(0,200,255,0.15); }
+#loading { font-size:20px; color:#00cfff; letter-spacing:3px; text-shadow:0 0 10px #00cfff; }
