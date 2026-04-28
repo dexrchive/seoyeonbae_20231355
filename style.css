@@ -1,7 +1,13 @@
-html, body {
-  margin: 0;
-  padding: 0;
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#000;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:100vh; font-family:'Courier New',monospace; overflow:hidden;
 }
-canvas {
-  display: block;
+#hud {
+  width:760px; display:flex; justify-content:space-between; align-items:center;
+  padding:7px 16px; background:#000;
+  border:2px solid #00cfff; border-bottom:none;
+  color:#00cfff; font-size:16px; font-weight:bold;
+  letter-spacing:2px; text-shadow:0 0 8px #00cfff;
 }
