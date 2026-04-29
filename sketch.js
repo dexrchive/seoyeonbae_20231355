@@ -117,11 +117,19 @@ function movePac() {
     }
   }
   // 콩 먹기
-
+  dots.forEach(d => { 
+    if (!d.eaten && dist(p.x, p.y, d.x, d.y) < p.r+4) {
+      d.eaten = true;
+      score += 10;
+      updateHUD();
+      if (score % 1000 === 0) addGhost();
+    }
+  });
 
   if (p.iframes > 0) p.iframes--;
 }
 
+// 유령 위치
 function navySpots() {
   const spots = [], cx = CW/2, cy = CH/2;
   for (let y = 20; y < CH-20; y += 20) {
@@ -144,16 +152,16 @@ function shuffle(a) {
 }
 
 function spawnGhosts() {
-  const spots = shuffle(navySpots()), n = 5;
-  ghosts = [];
+  const spots = shuffle(navySpots()), n = 5; // 랜덤 위치 목록, 유령 5마리
+  ghosts = []; // 기존 유령 전부 제거
   for (let i = 0; i < n; i++) {
     const s = spots[i % spots.length], d = DIRS[i % 4];
     ghosts.push({
-      x: s.x, y: s.y,
-      dx: d.dx, dy: d.dy,
-      spd: 1.2 + Math.random() * 0.4,
-      r: 7,
-      color: GCOLS[i % GCOLS.length]
+      x: s.x, y: s.y,       // 랜덤 초기 위치
+      dx: d.dx, dy: d.dy,   // 초기 이동 방향
+      spd: 1.2 + Math.random() * 0.4, // 유령마다 속도 약간씩 다르게 (1.2~1.6)
+      r: 7,                  // 유령 반지름
+      color: GCOLS[i % GCOLS.length] // 유령마다 고유 색상
     });
   }
 }
@@ -171,7 +179,7 @@ function addGhost() {
     color: GCOLS[ghosts.length % GCOLS.length]
   });
 }
-
+// 유령 이동
 function moveGhost(g) {
   const ok = d => canMove(g.x, g.y, d.dx, d.dy, g.spd, g.r);
   const notBack = d => !(d.dx === -g.dx && d.dy === -g.dy);
@@ -188,7 +196,7 @@ function moveGhost(g) {
   if (g.x < 0 && isNavy(CW-1, g.y)) { g.x = CW - 1; }
   if (g.x > CW && isNavy(0, g.y)) { g.x = 1; }
 }
-
+// 에너지 감소
 function checkCollisions() {
   if (pac.iframes > 0) return;
   ghosts.forEach(g => {
@@ -205,7 +213,7 @@ function checkCollisions() {
     }
   });
 }
-
+// 승리조건
 function checkWin() {
   if (dots.some(d => !d.eaten)) return;
   gameState = 'over';
@@ -245,7 +253,7 @@ function draw() {
     bannerTimer--;
   }
 }
-
+// 팩맨 부채꼴
 function drawPac() {
   const p = pac;
   if (p.iframes > 0 && Math.floor(tick/5) % 2 === 0) return;
@@ -271,14 +279,14 @@ function drawPac() {
   pop();
 }
 
+// 유령 
 function drawGhost(g) {
   const r = g.r;
   push();
-  fill(g.color);
+  fill(g.color); // 유령 고유 색상
   noStroke();
 
   arc(g.x, g.y - r*0.15, r*1.76, r*1.76, PI, TWO_PI);
-
   beginShape();
   vertex(g.x - r, g.y - r*0.15);
   vertex(g.x - r, g.y + r*0.72);
