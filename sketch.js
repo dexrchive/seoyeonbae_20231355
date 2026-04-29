@@ -216,7 +216,6 @@ function drawGhost(g) {
 
 function updateHUD() {
   document.getElementById('scoreVal').textContent = score;
-  document.getElementById('levelVal').textContent = level;
   const bar = document.getElementById('energyBar'); bar.innerHTML='';
   for (let i=0; i<3; i++) {
     const s = document.createElement('span');
@@ -249,7 +248,7 @@ document.addEventListener('keydown', e => {
 
 function startGame() {
   document.getElementById('overlay').style.display='none';
-  score=0; energy=3; level=1; tick=0; mouthA=0.15; mouthDir=1;
+  score=0; energy=3; tick=0; mouthA=0.15; mouthDir=1;
   dots=buildDots(); pac=makePac(); spawnGhosts(); gameState='playing'; updateHUD();
   if (raf) cancelAnimationFrame(raf);
   loop();
