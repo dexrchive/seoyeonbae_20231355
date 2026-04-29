@@ -85,6 +85,8 @@ function movePac() {
       d.eaten = true;
       score += 10;
       updateHUD();
+// 보너스 조건 : 점수 1000점 단위로 유령 수 증가
+    if (score % 1000 === 0) spawnGhosts();
     }
   });
   if (p.iframes>0) p.iframes--;
@@ -92,7 +94,7 @@ function movePac() {
 }
 
 const GCOLS = ['#ff2020','#ff9090','#20ccff','#ff80dd','#ffaa20','#80ff40','#ff40aa','#40ffcc','#ffdd20','#cc80ff'];
-function ghostCount() { return 5; }
+function ghostCount() { return Math.min(5 + Math.floor(score/1000), 10); }
 
 function navySpots() {
   const spots = [], cx = CW/2, cy = CH/2;
