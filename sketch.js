@@ -17,3 +17,6 @@ function isNavy(px, py) {
   const b = imgData.data[i + 2];
   return b > 30 && b > r * 1.5;
 } // 이게 맞나?
+
+function canMove(x, y, dx, dy, spd, r) {
+    const
