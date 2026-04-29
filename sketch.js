@@ -32,26 +32,14 @@ const DOT_STEP = 10;
 
 function buildDots() {
   const dots = [];
-
-  function nearCyan(x, y) {
-    for (let dy = -DOT_STEP; dy <= DOT_STEP; dy += DOT_STEP)
-      for (let dx = -DOT_STEP; dx <= DOT_STEP; dx += DOT_STEP) {
-        if (dx === 0 && dy === 0) continue;
-        const px = ((Math.round(x+dx) % CW) + CW) % CW;
-        const py = Math.round(y+dy);
-        if (py < 0 || py >= CH) continue;
-        const i = (py * CW + px) * 4;
-        const r = imgData.data[i];
-        const g = imgData.data[i+1];
-        const b = imgData.data[i+2];
-        if (r > 50 && g > 100 && b > 150) return true;
-      }
-    return false;
-  }
+  const dirs = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
 
   for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP)
-    for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP)
-      if (isNavy(x, y) && !nearCyan(x, y)) dots.push({ x, y, eaten: false });
+    for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP) {
+      if (!isNavy(x, y)) continue;
+      const moveCount = dirs.filter(d => canMove(x, y, d.dx, d.dy, 1, 5)).length;
+      if (moveCount >= 2) dots.push({ x, y, eaten: false });
+    }
   return dots;
 }
 
@@ -207,8 +195,8 @@ function drawPac() {
   ctx.shadowColor='#ffcc00'; ctx.shadowBlur=14;
   ctx.fillStyle='#ffee00';
   ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.arc(p.x,p.y,p.r,fa+mo,fa+Math.PI*2-mo); ctx.closePath(); ctx.fill();
-  ctx.shadowBlur=0; ctx.fillStyle='#000';
-  ctx.beginPath(); ctx.arc(p.x+Math.cos(fa-0.55)*p.r*0.5, p.y+Math.sin(fa-0.55)*p.r*0.5, 2, 0, Math.PI*2); ctx.fill();
+//   ctx.shadowBlur=0; ctx.fillStyle='#000';
+//   ctx.beginPath(); ctx.arc(p.x+Math.cos(fa-0.55)*p.r*0.5, p.y+Math.sin(fa-0.55)*p.r*0.5, 2, 0, Math.PI*2); ctx.fill();
   ctx.restore();
 }
 
