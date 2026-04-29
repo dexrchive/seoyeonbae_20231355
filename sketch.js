@@ -32,13 +32,7 @@ function buildDots() {
   const dots = [];
   for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP)
     for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP)
-      if (isNavy(x, y)) dots.push({ x, y, eaten: false, power: false });
-
-  [{x:20,y:20},{x:CW-20,y:20},{x:20,y:CH-20},{x:CW-20,y:CH-20}].forEach(c => {
-    let best = null, bestD = Infinity;
-    dots.forEach(d => { const dist = Math.hypot(d.x-c.x, d.y-c.y); if (dist < bestD) { bestD = dist; best = d; } });
-    if (best) best.power = true;
-  });
+      if (isNavy(x, y)) dots.push({ x, y, eaten: false });
   return dots;
 }
 
@@ -82,18 +76,16 @@ function movePac() {
   dots.forEach(d => {
     if (!d.eaten && Math.hypot(p.x-d.x, p.y-d.y) < p.r+4) {
       d.eaten = true;
-      if (d.power) { score+=50; p.powered=240; ghosts.forEach(g=>g.scared=240); }
-      else score += 10;
+      score += 10;
       updateHUD();
     }
   });
-  if (p.powered>0) p.powered--;
   if (p.iframes>0) p.iframes--;
   ghosts.forEach(g => { if (g.scared>0) g.scared--; });
 }
 
 const GCOLS = ['#ff2020','#ff9090','#20ccff','#ff80dd','#ffaa20','#80ff40','#ff40aa','#40ffcc','#ffdd20','#cc80ff'];
-function ghostCount() { return Math.min(5 + Math.floor(score/300), 10); }
+function ghostCount() { return 5; }
 
 function navySpots() {
   const spots = [], cx = CW/2, cy = CH/2;
@@ -142,15 +134,10 @@ function checkCollisions() {
   if (pac.iframes>0) return;
   ghosts.forEach(g => {
     if (Math.hypot(pac.x-g.x, pac.y-g.y) < pac.r+g.r*0.8) {
-      if (g.scared>0) {
-        score+=200; updateHUD();
-        const sp=shuffle(navySpots())[0]; g.x=sp.x; g.y=sp.y; g.scared=0;
-      } else {
-        energy--; updateHUD();
-        if (energy<=0) { gameState='over'; showOverlay('GAME OVER','#ff3333','최종 점수: '+score,'다시 시작'); return; }
-        const s=findStart(); pac.x=s.x; pac.y=s.y; pac.dx=0; pac.dy=0; pac.iframes=100;
-        spawnGhosts();
-      }
+      energy--; updateHUD();
+      if (energy<=0) { gameState='over'; showOverlay('GAME OVER','#ff3333','최종 점수: '+score,'다시 시작'); return; }
+      const s=findStart(); pac.x=s.x; pac.y=s.y; pac.dx=0; pac.dy=0; pac.iframes=100;
+      spawnGhosts();
     }
   });
 }
@@ -211,26 +198,17 @@ function drawPac() {
 }
 
 function drawGhost(g) {
-  const fl = g.scared>0&&g.scared<70&&Math.floor(tick/8)%2===0;
-  const col = g.scared>0?(fl?'#fff':'#2244dd'):g.color, r=g.r;
+  const col = g.color, r = g.r;
   ctx.save();
   ctx.shadowColor=col; ctx.shadowBlur=10; ctx.fillStyle=col;
   ctx.beginPath(); ctx.arc(g.x, g.y-r*0.15, r*0.88, Math.PI, 0);
   const sw=r*0.5, bot=g.y+r*0.72; ctx.lineTo(g.x+r, bot);
   for (let i=4; i>=0; i--) ctx.lineTo(g.x-r+i*sw, bot+(i%2===0?-r*0.26:r*0.08));
   ctx.closePath(); ctx.fill(); ctx.shadowBlur=0;
-  if (!g.scared) {
-    [[-0.3],[0.3]].forEach(([ox]) => {
-      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(g.x+ox*r,g.y-r*0.22,r*0.2,r*0.26,0,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#001aaa'; ctx.beginPath(); ctx.ellipse(g.x+ox*r+0.05*r,g.y-r*0.2,r*0.1,r*0.13,0,0,Math.PI*2); ctx.fill();
-    });
-  } else {
-    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
-    [[-0.3],[0.3]].forEach(([ox]) => {
-      const ex=g.x+ox*r, ey=g.y-r*0.24;
-      ctx.beginPath(); ctx.moveTo(ex-3,ey-3); ctx.lineTo(ex+3,ey+3); ctx.moveTo(ex+3,ey-3); ctx.lineTo(ex-3,ey+3); ctx.stroke();
-    });
-  }
+  [[-0.3],[0.3]].forEach(([ox]) => {
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(g.x+ox*r,g.y-r*0.22,r*0.2,r*0.26,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#001aaa'; ctx.beginPath(); ctx.ellipse(g.x+ox*r+0.05*r,g.y-r*0.2,r*0.1,r*0.13,0,0,Math.PI*2); ctx.fill();
+  });
   ctx.restore();
 }
 
@@ -282,7 +260,7 @@ function loop() {
   raf = requestAnimationFrame(loop);
 }
 
-// 수정 (루프 중복 방지)
+mapImg = new Image();
 mapImg.onload = function() {
   offCtx.drawImage(mapImg, 0, 0, CW, CH);
   imgData = offCtx.getImageData(0, 0, CW, CH);
@@ -290,7 +268,7 @@ mapImg.onload = function() {
   document.getElementById('overlaySub').textContent='남색 통로만 이동 가능 | 방향키로 조작';
   document.getElementById('overlayBtn').style.display='block';
   dots=buildDots(); pac=makePac(); ghosts=[];
-  // loop() 호출 제거 — startGame()에서만 시작
+  loop();
 };
 
 mapImg.onerror = function() {
