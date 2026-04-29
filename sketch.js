@@ -3,15 +3,15 @@ const CW = 760, CH = 414; // 캔버스 가로 세로 크기
 let mapImg;
 let imgData;
 
-let dots = [];
+let dots = []; // 콩 목록 배열
 let score = 0;
 let energy = 3;
-let pac;
-let ghosts = [];
+let pac; // 팩맨 객체
+let ghosts = []; // 유령 목록 배열
 let gameState = 'menu';
 let tick = 0;
-let mouthA = 0.15;
-let mouthDir = 1;
+let mouthA = 0.15; // 입 각도
+let mouthDir = 1; // 보너스 조건
 let bannerText = '', bannerTimer = 0, bannerColor = '#fff';
 
 const DOT_STEP = 10;
