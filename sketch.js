@@ -162,3 +162,90 @@ function spawnGhosts() {
   }
 }
 
+function addGhost() {
+  if (ghosts.length >= 10) return;
+  const spots = shuffle(navySpots());
+  const s = spots[0];
+  const d = DIRS[ghosts.length % 4];
+  ghosts.push({
+    x: s.x, y: s.y,
+    dx: d.dx, dy: d.dy,
+    spd: 1.2 + Math.random() * 0.4,
+    r: 7,
+    color: GCOLS[ghosts.length % GCOLS.length]
+  });
+}
+
+function moveGhost(g) {
+  const ok = d => canMove(g.x, g.y, d.dx, d.dy, g.spd, g.r);
+  const notBack = d => !(d.dx === -g.dx && d.dy === -g.dy);
+
+  if (!ok({dx:g.dx, dy:g.dy}) || tick%30 === ~~(g.spd*10)%30) {
+    const valid = DIRS.filter(d => ok(d) && notBack(d));
+    if (valid.length) {
+      g.dx = valid[~~(Math.random()*valid.length)].dx;
+      g.dy = valid[~~(Math.random()*valid.length)].dy;
+    } else { g.dx = -g.dx; g.dy = -g.dy; }
+  }
+  if (ok({dx:g.dx, dy:g.dy})) { g.x += g.dx*g.spd; g.y += g.dy*g.spd; }
+
+  if (g.x < 0 && isNavy(CW-1, g.y)) { g.x = CW - 1; }
+  if (g.x > CW && isNavy(0, g.y)) { g.x = 1; }
+}
+
+function checkCollisions() {
+  if (pac.iframes > 0) return;
+  ghosts.forEach(g => {
+    if (Math.hypot(pac.x-g.x, pac.y-g.y) < pac.r+g.r*0.8) {
+      energy--; updateHUD();
+      if (energy <= 0) {
+        gameState = 'over';
+        showOverlay('GAME OVER', '#ff3333', '최종 점수: '+score, '다시 시작');
+        return;
+      }
+      const s = findStart();
+      pac.x = s.x; pac.y = s.y; pac.dx = 0; pac.dy = 0; pac.iframes = 100;
+      spawnGhosts();
+    }
+  });
+}
+
+function checkWin() {
+  if (dots.some(d => !d.eaten)) return;
+  gameState = 'over';
+  showOverlay('승리했어요!', '#ffff00', '최종 점수: '+score, '다시 시작');
+}
+
+function draw() {
+  tick++;
+
+  if (gameState === 'playing') {
+    movePac();
+    ghosts.forEach(g => moveGhost(g));
+    checkCollisions();
+    checkWin();
+  }
+
+  image(mapImg, 0, 0, CW, CH);
+
+  dots.forEach(d => {
+    if (d.eaten) return;
+    noStroke();
+    fill(255);
+    circle(d.x, d.y, 4);
+  });
+
+  ghosts.forEach(g => drawGhost(g));
+  drawPac();
+
+  if (bannerTimer > 0) {
+    push();
+    fill(bannerColor);
+    textAlign(CENTER, CENTER);
+    textSize(36);
+    noStroke();
+    text(bannerText, CW/2, CH/2);
+    pop();
+    bannerTimer--;
+  }
+}
