@@ -136,3 +136,29 @@ function navySpots() {
   }
   return spots;
 }
+
+function shuffle(a) {
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function ghostCount() { return Math.min(5 + Math.floor(score/1000), 10); }
+
+function spawnGhosts() {
+  const spots = shuffle(navySpots()), n = 5;
+  ghosts = [];
+  for (let i = 0; i < n; i++) {
+    const s = spots[i % spots.length], d = DIRS[i % 4];
+    ghosts.push({
+      x: s.x, y: s.y,
+      dx: d.dx, dy: d.dy,
+      spd: 1.2 + Math.random() * 0.4,
+      r: 7,
+      color: GCOLS[i % GCOLS.length]
+    });
+  }
+}
+
