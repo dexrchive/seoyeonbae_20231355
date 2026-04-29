@@ -1,4 +1,4 @@
-const CW = 760, CH = 414;
+const CW = 760, CH = 414; // 캔버스 가로 세로 크기
 
 let mapImg;
 let imgData;
