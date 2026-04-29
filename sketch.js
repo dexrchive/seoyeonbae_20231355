@@ -48,7 +48,7 @@ function buildDots() {
       }
     return false;
   }
-  
+
   for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP)
     for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP)
       if (isNavy(x, y) && !nearCyan(x, y)) dots.push({ x, y, eaten: false });
@@ -109,8 +109,13 @@ function ghostCount() { return 5; }
 function navySpots() {
   const spots = [], cx = CW/2, cy = CH/2;
   for (let y = 20; y < CH-20; y += 20)
-    for (let x = 20; x < CW-20; x += 20)
-      if (isNavy(x,y) && (Math.abs(x-cx)>80 || Math.abs(y-cy)>60)) spots.push({x,y});
+    for (let x = 20; x < CW-20; x += 20) {
+      if (!isNavy(x, y)) continue;
+      // 실제로 상하좌우 중 한 방향이라도 이동 가능한지 확인
+      const movable = DIRS.some(d => canMove(x, y, d.dx, d.dy, 1, 7));
+      if (movable && (Math.abs(x-cx)>80 || Math.abs(y-cy)>60))
+        spots.push({x, y});
+    }
   return spots;
 }
 
