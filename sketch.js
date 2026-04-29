@@ -15,8 +15,9 @@ function isNavy(px, py) {
   px = ((px % CW) + CW) % CW; // x는 좌우로 감싸기 (워프 허용)
   const i = (py * CW + px) * 4;
   const r = imgData.data[i];
+  const g = imgData.data[i + 1];
   const b = imgData.data[i + 2];
-  return b > 30 && b > r * 1.5;
+  return b > 30 && b > r * 1.5 && b > g * 1.5;
 }
 
 function canMove(x, y, dx, dy, spd, r) {
@@ -107,7 +108,7 @@ function spawnGhosts() {
   const dirs = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
   for (let i=0; i<n; i++) {
     const s = spots[i%spots.length], d = dirs[i%4];
-    ghosts.push({ x:s.x, y:s.y, dx:d.dx, dy:d.dy, spd:1.2+Math.random()*0.6, r:7, color:GCOLS[i%GCOLS.length] });
+    ghosts.push({ x:s.x, y:s.y, dx:d.dx, dy:d.dy, spd:1.2+Math.random()*0.4, r:7, color:GCOLS[i%GCOLS.length] });
   }
 }
 
@@ -116,17 +117,13 @@ const DIRS = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
 function moveGhost(g) {
   const ok = d => canMove(g.x, g.y, d.dx, d.dy, g.spd, g.r);
   const notBack = d => !(d.dx===-g.dx && d.dy===-g.dy);
-  const tgt = {x:pac.x, y:pac.y};
-  const dist = d => Math.hypot(g.x+d.dx*10-tgt.x, g.y+d.dy*10-tgt.y);
-
   if (!ok({dx:g.dx,dy:g.dy}) || tick%30===~~(g.spd*10)%30) {
-    const valid = DIRS.filter(d=>ok(d)&&notBack(d));
-    if (valid.length) {
-      valid.sort((a,b)=>dist(a)-dist(b));
-      const pick = Math.random()<0.72 ? valid[0] : valid[~~(Math.random()*valid.length)];
-      g.dx=pick.dx; g.dy=pick.dy;
-    } else { g.dx=-g.dx; g.dy=-g.dy; }
-  }
+  const valid = DIRS.filter(d=>ok(d)&&notBack(d));
+  if (valid.length) {
+    g.dx=valid[~~(Math.random()*valid.length)].dx;
+    g.dy=valid[~~(Math.random()*valid.length)].dy;
+  } else { g.dx=-g.dx; g.dy=-g.dy; }
+}
   if (ok({dx:g.dx,dy:g.dy})) { g.x+=g.dx*g.spd; g.y+=g.dy*g.spd; }
   if (g.x < 0 && isNavy(CW-1, g.y)) { g.x = CW - 1; }
   if (g.x > CW && isNavy(0, g.y)) { g.x = 1; }
