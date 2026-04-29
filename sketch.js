@@ -119,3 +119,38 @@ function spawnGhosts() {
 }
 
 const DIRS = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
+
+function moveGhost(g) {
+  const ok = d => canMove(g.x, g.y, d.dx, d.dy, g.spd, g.r);
+  const notBack = d => !(d.dx===-g.dx && d.dy===-g.dy);
+  const tgt = g.scared>0 ? {x:g.x*2-pac.x, y:g.y*2-pac.y} : {x:pac.x, y:pac.y};
+  const dist = d => Math.hypot(g.x+d.dx*10-tgt.x, g.y+d.dy*10-tgt.y);
+
+  if (!ok({dx:g.dx,dy:g.dy}) || tick%30===~~(g.spd*10)%30) {
+    const valid = DIRS.filter(d=>ok(d)&&notBack(d));
+    if (valid.length) {
+      valid.sort((a,b)=>dist(a)-dist(b));
+      const pick = Math.random()<0.72 ? valid[0] : valid[~~(Math.random()*valid.length)];
+      g.dx=pick.dx; g.dy=pick.dy;
+    } else { g.dx=-g.dx; g.dy=-g.dy; }
+  }
+  if (ok({dx:g.dx,dy:g.dy})) { g.x+=g.dx*g.spd; g.y+=g.dy*g.spd; }
+  if (g.x<-g.r) g.x=CW+g.r; if (g.x>CW+g.r) g.x=-g.r;
+}
+
+function checkCollisions() {
+  if (pac.iframes>0) return;
+  ghosts.forEach(g => {
+    if (Math.hypot(pac.x-g.x, pac.y-g.y) < pac.r+g.r*0.8) {
+      if (g.scared>0) {
+        score+=200; updateHUD();
+        const sp=shuffle(navySpots())[0]; g.x=sp.x; g.y=sp.y; g.scared=0;
+      } else {
+        energy--; updateHUD();
+        if (energy<=0) { gameState='over'; showOverlay('GAME OVER','#ff3333','최종 점수: '+score,'다시 시작'); return; }
+        const s=findStart(); pac.x=s.x; pac.y=s.y; pac.dx=0; pac.dy=0; pac.iframes=100;
+        spawnGhosts();
+      }
+    }
+  });
+}
