@@ -249,3 +249,29 @@ function draw() {
     bannerTimer--;
   }
 }
+
+function drawPac() {
+  const p = pac;
+  if (p.iframes > 0 && Math.floor(tick/5) % 2 === 0) return;
+
+  const mv = p.dx !== 0 || p.dy !== 0;
+  if (mv) {
+    mouthA += 0.16 * mouthDir;
+    if (mouthA > 0.38) mouthDir = -1;
+    if (mouthA < 0.02) { mouthDir = 1; mouthA = 0.02; }
+  }
+  const mo = mv ? mouthA : 0.12;
+
+  let fa = 0;
+  if (p.dx === 1) fa = 0;
+  else if (p.dx === -1) fa = PI;
+  else if (p.dy === -1) fa = -PI/2;
+  else if (p.dy === 1) fa = PI/2;
+
+  push();
+  fill('#ffee00');
+  noStroke();
+  arc(p.x, p.y, p.r*2, p.r*2, fa+mo, fa+TWO_PI-mo, PIE);
+  pop();
+}
+
