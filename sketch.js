@@ -32,9 +32,26 @@ const DOT_STEP = 10;
 
 function buildDots() {
   const dots = [];
+
+  function nearCyan(x, y) {
+    for (let dy = -DOT_STEP; dy <= DOT_STEP; dy += DOT_STEP)
+      for (let dx = -DOT_STEP; dx <= DOT_STEP; dx += DOT_STEP) {
+        if (dx === 0 && dy === 0) continue;
+        const px = ((Math.round(x+dx) % CW) + CW) % CW;
+        const py = Math.round(y+dy);
+        if (py < 0 || py >= CH) continue;
+        const i = (py * CW + px) * 4;
+        const r = imgData.data[i];
+        const g = imgData.data[i+1];
+        const b = imgData.data[i+2];
+        if (r > 50 && g > 100 && b > 150) return true;
+      }
+    return false;
+  }
+
   for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP)
     for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP)
-      if (isNavy(x, y)) dots.push({ x, y, eaten: false });
+      if (isNavy(x, y) && !nearCyan(x, y)) dots.push({ x, y, eaten: false });
   return dots;
 }
 
