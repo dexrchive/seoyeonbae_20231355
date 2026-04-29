@@ -275,3 +275,47 @@ function drawPac() {
   pop();
 }
 
+function drawGhost(g) {
+  const r = g.r;
+  push();
+  fill(g.color);
+  noStroke();
+
+  arc(g.x, g.y - r*0.15, r*1.76, r*1.76, PI, TWO_PI);
+
+  beginShape();
+  vertex(g.x - r, g.y - r*0.15);
+  vertex(g.x - r, g.y + r*0.72);
+  for (let i = 0; i <= 4; i++) {
+    let wx = g.x - r + i * (r*0.5);
+    let wy = g.y + r*0.72 + (i % 2 === 0 ? -r*0.26 : r*0.08);
+    vertex(wx, wy);
+  }
+  vertex(g.x + r, g.y + r*0.72);
+  vertex(g.x + r, g.y - r*0.15);
+  endShape(CLOSE);
+
+  fill(255);
+  ellipse(g.x - r*0.3, g.y - r*0.22, r*0.4, r*0.52);
+  ellipse(g.x + r*0.3, g.y - r*0.22, r*0.4, r*0.52);
+  fill('#001aaa');
+  ellipse(g.x - r*0.25, g.y - r*0.2, r*0.2, r*0.26);
+  ellipse(g.x + r*0.35, g.y - r*0.2, r*0.2, r*0.26);
+  pop();
+}
+
+function keyPressed() {
+  if (gameState === 'playing') {
+    if (keyCode === LEFT_ARROW)  { pac.ndx = -1; pac.ndy = 0; }
+    if (keyCode === RIGHT_ARROW) { pac.ndx =  1; pac.ndy = 0; }
+    if (keyCode === UP_ARROW)    { pac.ndx =  0; pac.ndy = -1; }
+    if (keyCode === DOWN_ARROW)  { pac.ndx =  0; pac.ndy =  1; }
+    if (key === 'a' || key === 'A') { pac.ndx = -1; pac.ndy = 0; }
+    if (key === 'd' || key === 'D') { pac.ndx =  1; pac.ndy = 0; }
+    if (key === 'w' || key === 'W') { pac.ndx =  0; pac.ndy = -1; }
+    if (key === 's' || key === 'S') { pac.ndx =  0; pac.ndy =  1; }
+  }
+  if ((keyCode === ENTER || key === ' ') && gameState !== 'playing') {
+    startGame();
+  }
+}
