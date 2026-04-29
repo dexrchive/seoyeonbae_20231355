@@ -34,8 +34,8 @@ function buildDots() {
   const dots = [];
 
   function nearCyan(x, y) {
-    for (let dy = -DOT_STEP; dy <= DOT_STEP; dy += DOT_STEP)
-      for (let dx = -DOT_STEP; dx <= DOT_STEP; dx += DOT_STEP) {
+    for (let dy = -DOT_STEP*2; dy <= DOT_STEP*2; dy += DOT_STEP)  // 범위 2칸으로 넓힘
+      for (let dx = -DOT_STEP*2; dx <= DOT_STEP*2; dx += DOT_STEP) {
         if (dx === 0 && dy === 0) continue;
         const px = ((Math.round(x+dx) % CW) + CW) % CW;
         const py = Math.round(y+dy);
@@ -44,7 +44,7 @@ function buildDots() {
         const r = imgData.data[i];
         const g = imgData.data[i+1];
         const b = imgData.data[i+2];
-        if (r > 50 && g > 100 && b > 150) return true;
+        if (r > 20 && g > 60 && b > 100) return true;  // 임계값 낮춤
       }
     return false;
   }
