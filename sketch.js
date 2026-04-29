@@ -54,3 +54,11 @@ function isNavy(px, py) {
   const b = imgData.data[i + 2];
   return b > 30 && b > r * 1.5 && b > g * 1.5;
 }
+
+function canMove(x, y, dx, dy, spd, r) {
+  const nx = x + dx * spd, ny = y + dy * spd, m = r * 0.72;
+  const pts = dx !== 0
+    ? [[nx+dx*m, ny-m*0.6], [nx+dx*m, ny], [nx+dx*m, ny+m*0.6]]
+    : [[nx-m*0.6, ny+dy*m], [nx, ny+dy*m], [nx+m*0.6, ny+dy*m]];
+  return pts.every(([px, py]) => isNavy(px, py));
+}
