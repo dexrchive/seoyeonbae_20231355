@@ -145,8 +145,6 @@ function shuffle(a) {
   return a;
 }
 
-function ghostCount() { return Math.min(5 + Math.floor(score/1000), 10); }
-
 function spawnGhosts() {
   const spots = shuffle(navySpots()), n = 5;
   ghosts = [];
@@ -342,3 +340,15 @@ function updateHUD() {
   }
 }
 
+function showOverlay(title, color, sub, btn) {
+  document.getElementById('overlay').style.display = 'flex';
+  const t = document.getElementById('overlayTitle');
+  t.textContent = title; t.style.color = color;
+  t.style.textShadow = '0 0 24px ' + color;
+  document.getElementById('overlaySub').textContent = sub;
+  document.getElementById('overlayBtn').style.display = 'block';
+  document.getElementById('overlayBtn').textContent = '▶ ' + btn;
+  document.getElementById('loading').style.display = 'none';
+}
+
+function showBanner(t, c, d) { bannerText = t; bannerColor = c; bannerTimer = d; }
