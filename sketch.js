@@ -116,7 +116,7 @@ function movePac() {
   }
 
   dots.forEach(d => {
-    if (!d.eaten && Math.hypot(p.x-d.x, p.y-d.y) < p.r+4) {
+    if (!d.eaten && dist(p.x, p.y, d.x, d.y) < p.r+4) {
       d.eaten = true;
       score += 10;
       updateHUD();
