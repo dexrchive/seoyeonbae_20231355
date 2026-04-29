@@ -91,3 +91,48 @@ function makePac() {
   const s = findStart();
   return { x:s.x, y:s.y, dx:0, dy:0, ndx:0, ndy:0, spd:1.8, r:7, iframes:0 };
 }
+
+function movePac() {
+  const p = pac;
+
+  if (p.x < 0 && isNavy(CW-1, p.y)) { p.x = CW - 1; }
+  if (p.x > CW && isNavy(0, p.y)) { p.x = 1; }
+
+  if ((p.ndx||p.ndy) && canMove(p.x, p.y, p.ndx, p.ndy, p.spd, p.r)) {
+    p.dx = p.ndx; p.dy = p.ndy;
+  }
+
+  if (p.dx||p.dy) {
+    if (canMove(p.x, p.y, p.dx, p.dy, p.spd, p.r)) {
+      p.x += p.dx * p.spd;
+      p.y += p.dy * p.spd;
+    } else {
+      if (p.dx !== 0) p.y += (Math.round(p.y/DOT_STEP)*DOT_STEP - p.y) * 0.25;
+      if (p.dy !== 0) p.x += (Math.round(p.x/DOT_STEP)*DOT_STEP - p.x) * 0.25;
+    }
+  }
+
+  dots.forEach(d => {
+    if (!d.eaten && Math.hypot(p.x-d.x, p.y-d.y) < p.r+4) {
+      d.eaten = true;
+      score += 10;
+      updateHUD();
+      if (score % 1000 === 0) addGhost();
+    }
+  });
+
+  if (p.iframes > 0) p.iframes--;
+}
+
+function navySpots() {
+  const spots = [], cx = CW/2, cy = CH/2;
+  for (let y = 20; y < CH-20; y += 20) {
+    for (let x = 20; x < CW-20; x += 20) {
+      if (!isNavy(x, y)) continue;
+      const movable = DIRS.some(d => canMove(x, y, d.dx, d.dy, 1, 7));
+      if (movable && (Math.abs(x-cx) > 80 || Math.abs(y-cy) > 60))
+        spots.push({ x, y });
+    }
+  }
+  return spots;
+}
