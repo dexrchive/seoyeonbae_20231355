@@ -153,9 +153,8 @@ function checkCollisions() {
 
 function checkWin() {
   if (dots.some(d=>!d.eaten)) return;
-  level++; score+=500; dots=buildDots();
-  const s=findStart(); pac.x=s.x; pac.y=s.y; pac.dx=0; pac.dy=0; pac.iframes=90;
-  spawnGhosts(); updateHUD(); showBanner('LEVEL '+level+'!','#ffff00',100);
+  gameState = 'over';
+  showOverlay('승리했어요!', '#ffff00', '최종 점수: '+score, '다시 시작');
 }
 
 function draw() {
