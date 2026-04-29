@@ -14,7 +14,7 @@ let mouthA = 0.15; // 입 각도
 let mouthDir = 1; // 보너스 조건
 let bannerText = '', bannerTimer = 0, bannerColor = '#fff';
 
-const DOT_STEP = 10;
+const DOT_STEP = 10; // 콩 배치 간격
 const DIRS = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
 const GCOLS = ['#ff2020','#ff9090','#20ccff','#ff80dd','#ffaa20',
                '#80ff40','#ff40aa','#40ffcc','#ffdd20','#cc80ff'];
@@ -27,6 +27,7 @@ function setup() {
   let cnv = createCanvas(CW, CH);
   cnv.parent('gameCanvas');
 
+  // *지도 인식 픽셀 데이터
   let offCanvas = document.createElement('canvas');
   offCanvas.width = CW;
   offCanvas.height = CH;
@@ -34,9 +35,9 @@ function setup() {
   offCtx.drawImage(mapImg.canvas, 0, 0, CW, CH);
   imgData = offCtx.getImageData(0, 0, CW, CH);
 
-  dots = buildDots();
-  pac = makePac();
-  ghosts = [];
+  dots = buildDots(); // 콩 배치
+  pac = makePac(); // 팩맨 생성
+  ghosts = []; // 유령 배열 초기화
   updateHUD();
 
   document.getElementById('loading').style.display = 'none';
