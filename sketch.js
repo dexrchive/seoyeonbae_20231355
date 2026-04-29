@@ -90,11 +90,13 @@ function findStart() {
   return { x: cx, y: cy };
 }
 
+// 팩맨 객체 
 function makePac() {
   const s = findStart();
   return { x:s.x, y:s.y, dx:0, dy:0, ndx:0, ndy:0, spd:1.8, r:7, iframes:0 };
 }
 
+// 팩맨 이동
 function movePac() {
   const p = pac;
 
@@ -114,15 +116,8 @@ function movePac() {
       if (p.dy !== 0) p.x += (Math.round(p.x/DOT_STEP)*DOT_STEP - p.x) * 0.25;
     }
   }
+  // 콩 먹기
 
-  dots.forEach(d => {
-    if (!d.eaten && dist(p.x, p.y, d.x, d.y) < p.r+4) {
-      d.eaten = true;
-      score += 10;
-      updateHUD();
-      if (score % 1000 === 0) addGhost();
-    }
-  });
 
   if (p.iframes > 0) p.iframes--;
 }
