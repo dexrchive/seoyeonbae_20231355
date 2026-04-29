@@ -323,7 +323,7 @@ function keyPressed() {
     startGame();
   }
 }
-
+// 게임 재시작
 function startGame() {
   score = 0; energy = 3; tick = 0; mouthA = 0.15; mouthDir = 1;
   dots = buildDots();
@@ -333,7 +333,7 @@ function startGame() {
   updateHUD();
   document.getElementById('overlay').style.display = 'none';
 }
-
+// 점수 에너지 업데이트
 function updateHUD() {
   document.getElementById('scoreVal').textContent = score;
   const bar = document.getElementById('energyBar');
