@@ -45,6 +45,7 @@ function setup() {
   document.getElementById('overlayBtn').style.display = 'block';
 }
 
+// 픽셀 색상 읽어서 벽과 통로 구분
 function isNavy(px, py) {
   px = Math.round(px); py = Math.round(py);
   if (py < 0 || py >= CH) return false;
@@ -64,6 +65,7 @@ function canMove(x, y, dx, dy, spd, r) {
   return pts.every(([px, py]) => isNavy(px, py));
 }
 
+// 남색 위치마다 콩 생성
 function buildDots() {
   const dots = [];
   for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP) {
@@ -80,8 +82,8 @@ function findStart() {
   const cx = Math.round(CW/2), cy = Math.round(CH/2);
   for (let r = 0; r < 200; r += 5) {
     for (let a = 0; a < Math.PI*2; a += 0.3) {
-      const x = cx + Math.round(Math.cos(a)*r);
-      const y = cy + Math.round(Math.sin(a)*r);
+      const x = cx + Math.round(cos(a)*r);
+      const y = cy + Math.round(sin(a)*r);
       if (isNavy(x, y)) return { x, y };
     }
   }
