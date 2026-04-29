@@ -34,8 +34,8 @@ function buildDots() {
   const dots = [];
 
   function nearCyan(x, y) {
-    for (let dy = -DOT_STEP; dy <= DOT_STEP; dy += 2)  // 2px 간격으로 촘촘히 탐색
-      for (let dx = -DOT_STEP; dx <= DOT_STEP; dx += 2) {
+    for (let dy = -DOT_STEP; dy <= DOT_STEP; dy += DOT_STEP)
+      for (let dx = -DOT_STEP; dx <= DOT_STEP; dx += DOT_STEP) {
         if (dx === 0 && dy === 0) continue;
         const px = ((Math.round(x+dx) % CW) + CW) % CW;
         const py = Math.round(y+dy);
@@ -44,11 +44,11 @@ function buildDots() {
         const r = imgData.data[i];
         const g = imgData.data[i+1];
         const b = imgData.data[i+2];
-        if (r > 20 && g > 60 && b > 100) return true;
+        if (r > 50 && g > 100 && b > 150) return true;
       }
     return false;
   }
-
+  
   for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP)
     for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP)
       if (isNavy(x, y) && !nearCyan(x, y)) dots.push({ x, y, eaten: false });
