@@ -62,3 +62,32 @@ function canMove(x, y, dx, dy, spd, r) {
     : [[nx-m*0.6, ny+dy*m], [nx, ny+dy*m], [nx+m*0.6, ny+dy*m]];
   return pts.every(([px, py]) => isNavy(px, py));
 }
+
+function buildDots() {
+  const dots = [];
+  for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP) {
+    for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP) {
+      if (!isNavy(x, y)) continue;
+      const moveCount = DIRS.filter(d => canMove(x, y, d.dx, d.dy, 1, 5)).length;
+      if (moveCount >= 2) dots.push({ x, y, eaten: false });
+    }
+  }
+  return dots;
+}
+
+function findStart() {
+  const cx = Math.round(CW/2), cy = Math.round(CH/2);
+  for (let r = 0; r < 200; r += 5) {
+    for (let a = 0; a < Math.PI*2; a += 0.3) {
+      const x = cx + Math.round(Math.cos(a)*r);
+      const y = cy + Math.round(Math.sin(a)*r);
+      if (isNavy(x, y)) return { x, y };
+    }
+  }
+  return { x: cx, y: cy };
+}
+
+function makePac() {
+  const s = findStart();
+  return { x:s.x, y:s.y, dx:0, dy:0, ndx:0, ndy:0, spd:1.8, r:7, iframes:0 };
+}
