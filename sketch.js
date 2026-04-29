@@ -11,7 +11,8 @@ let mapImg  = null;
 
 function isNavy(px, py) {
   px = Math.round(px); py = Math.round(py);
-  if (px < 0 || px >= CW || py < 0 || py >= CH) return false;
+  if (py < 0 || py >= CH) return false;
+  px = ((px % CW) + CW) % CW; // x는 좌우로 감싸기 (워프 허용)
   const i = (py * CW + px) * 4;
   const r = imgData.data[i];
   const b = imgData.data[i + 2];
@@ -58,8 +59,8 @@ function makePac() {
 
 function movePac() {
   const p = pac;
-  if (p.x < -p.r) { p.x = CW+p.r; return; }
-  if (p.x > CW+p.r) { p.x = -p.r; return; }
+  if (p.x < 0 && isNavy(CW-1, p.y)) { p.x = CW - 1; }
+  if (p.x > CW && isNavy(0, p.y)) { p.x = 1; }
 
   if ((p.ndx||p.ndy) && canMove(p.x, p.y, p.ndx, p.ndy, p.spd, p.r)) {
     p.dx = p.ndx; p.dy = p.ndy;
@@ -127,7 +128,8 @@ function moveGhost(g) {
     } else { g.dx=-g.dx; g.dy=-g.dy; }
   }
   if (ok({dx:g.dx,dy:g.dy})) { g.x+=g.dx*g.spd; g.y+=g.dy*g.spd; }
-  if (g.x<-g.r) g.x=CW+g.r; if (g.x>CW+g.r) g.x=-g.r;
+  if (g.x < 0 && isNavy(CW-1, g.y)) { g.x = CW - 1; }
+  if (g.x > CW && isNavy(0, g.y)) { g.x = 1; }
 }
 
 function checkCollisions() {
