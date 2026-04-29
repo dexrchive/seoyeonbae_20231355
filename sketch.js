@@ -197,7 +197,7 @@ function moveGhost(g) {
 function checkCollisions() {
   if (pac.iframes > 0) return;
   ghosts.forEach(g => {
-    if (Math.hypot(pac.x-g.x, pac.y-g.y) < pac.r+g.r*0.8) {
+    if (dist(pac.x, pac.y, g.x, g.y) < pac.r+g.r*0.8) {
       energy--; updateHUD();
       if (energy <= 0) {
         gameState = 'over';
