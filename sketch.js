@@ -13,3 +13,44 @@ let tick = 0;
 let mouthA = 0.15;
 let mouthDir = 1;
 let bannerText = '', bannerTimer = 0, bannerColor = '#fff';
+
+const DOT_STEP = 10;
+const DIRS = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
+const GCOLS = ['#ff2020','#ff9090','#20ccff','#ff80dd','#ffaa20',
+               '#80ff40','#ff40aa','#40ffcc','#ffdd20','#cc80ff'];
+
+function preload() {
+  mapImg = loadImage('Map.png');
+}
+
+function setup() {
+  let cnv = createCanvas(CW, CH);
+  cnv.parent('gameCanvas');
+
+  let offCanvas = document.createElement('canvas');
+  offCanvas.width = CW;
+  offCanvas.height = CH;
+  let offCtx = offCanvas.getContext('2d');
+  offCtx.drawImage(mapImg.canvas, 0, 0, CW, CH);
+  imgData = offCtx.getImageData(0, 0, CW, CH);
+
+  dots = buildDots();
+  pac = makePac();
+  ghosts = [];
+  updateHUD();
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('overlaySub').textContent = '남색 통로만 이동 가능 | 방향키로 조작';
+  document.getElementById('overlayBtn').style.display = 'block';
+}
+
+function isNavy(px, py) {
+  px = Math.round(px); py = Math.round(py);
+  if (py < 0 || py >= CH) return false;
+  px = ((px % CW) + CW) % CW;
+  const i = (py * CW + px) * 4;
+  const r = imgData.data[i];
+  const g = imgData.data[i + 1];
+  const b = imgData.data[i + 2];
+  return b > 30 && b > r * 1.5 && b > g * 1.5;
+}
