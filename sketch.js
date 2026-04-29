@@ -152,16 +152,16 @@ function shuffle(a) {
 }
 
 function spawnGhosts() {
-  const spots = shuffle(navySpots()), n = 5; // 랜덤 위치 목록, 유령 5마리
-  ghosts = []; // 기존 유령 전부 제거
+  const spots = shuffle(navySpots()), n = 5;
+  ghosts = []; 
   for (let i = 0; i < n; i++) {
     const s = spots[i % spots.length], d = DIRS[i % 4];
     ghosts.push({
-      x: s.x, y: s.y,       // 랜덤 초기 위치
-      dx: d.dx, dy: d.dy,   // 초기 이동 방향
-      spd: 1.2 + Math.random() * 0.4, // 유령마다 속도 약간씩 다르게 (1.2~1.6)
-      r: 7,                  // 유령 반지름
-      color: GCOLS[i % GCOLS.length] // 유령마다 고유 색상
+      x: s.x, y: s.y,   
+      dx: d.dx, dy: d.dy,  
+      spd: 1.2 + Math.random() * 0.4, 
+      r: 7,                
+      color: GCOLS[i % GCOLS.length]
     });
   }
 }
