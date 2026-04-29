@@ -106,7 +106,7 @@ function spawnGhosts() {
   const dirs = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
   for (let i=0; i<n; i++) {
     const s = spots[i%spots.length], d = dirs[i%4];
-    ghosts.push({ x:s.x, y:s.y, dx:d.dx, dy:d.dy, spd:1.2+Math.random()*0.6, r:7, color:GCOLS[i%GCOLS.length], scared:0 });
+    ghosts.push({ x:s.x, y:s.y, dx:d.dx, dy:d.dy, spd:1.2+Math.random()*0.6, r:7, color:GCOLS[i%GCOLS.length] });
   }
 }
 
@@ -115,7 +115,7 @@ const DIRS = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
 function moveGhost(g) {
   const ok = d => canMove(g.x, g.y, d.dx, d.dy, g.spd, g.r);
   const notBack = d => !(d.dx===-g.dx && d.dy===-g.dy);
-  const tgt = g.scared>0 ? {x:g.x*2-pac.x, y:g.y*2-pac.y} : {x:pac.x, y:pac.y};
+  const tgt = {x:pac.x, y:pac.y};
   const dist = d => Math.hypot(g.x+d.dx*10-tgt.x, g.y+d.dy*10-tgt.y);
 
   if (!ok({dx:g.dx,dy:g.dy}) || tick%30===~~(g.spd*10)%30) {
