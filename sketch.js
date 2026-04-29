@@ -66,7 +66,17 @@ function canMove(x, y, dx, dy, spd, r) {
 }
 
 // 남색 위치마다 콩 생성
-
+function buildDots() {
+  const dots = [];
+  for (let y = DOT_STEP; y < CH - DOT_STEP; y += DOT_STEP) {
+    for (let x = DOT_STEP; x < CW - DOT_STEP; x += DOT_STEP) {
+      if (!isNavy(x, y)) continue;
+      const moveCount = DIRS.filter(d => canMove(x, y, d.dx, d.dy, 1, 5)).length;
+      if (moveCount >= 2) dots.push({ x, y, eaten: false });
+    }
+  }
+  return dots;
+}
 
 function findStart() {
   const cx = Math.round(CW/2), cy = Math.round(CH/2);
